@@ -1,9 +1,3 @@
----
-output:
-  html_document:
-    keep_md: yes
-  pdf_document: default
----
 # Solution Manual: R-Programming Assignment 2
 ## Catching the Inverse of a Matrix
 
@@ -25,7 +19,8 @@ The following function creates a special "matrix' object that can cache its own 
 
 --steps in progress--
 
-```{r}
+
+```r
 makeCacheMatrix <- function(x = matrix()) {
         IM <- NULL
         set <- function(y) {
@@ -45,7 +40,8 @@ The following function computes the inverse of the special "matrix" returned by 
 
 --details on solve function in progress--
 
-```{r}
+
+```r
 cacheSolve <- function(x, ...) {
         IM <- x$getinv()
         if(!is.null(IM)) {
@@ -63,37 +59,154 @@ cacheSolve <- function(x, ...) {
 
 #####1. 2 x 2 matrix
 
-```{r}
+
+```r
 source("cachematrix.R")
 M <- makeCacheMatrix(matrix(10:13, 2, 2))
 M$get()
+```
+
+```
+##      [,1] [,2]
+## [1,]   10   12
+## [2,]   11   13
+```
+
+```r
 M$getinv() # no data on inverse matrix is cached yet
+```
+
+```
+## NULL
+```
+
+```r
 cacheSolve(M)
+```
+
+```
+##      [,1] [,2]
+## [1,] -6.5    6
+## [2,]  5.5   -5
+```
+
+```r
 cacheSolve(M) # the data on inverse matrix is cached already
+```
+
+```
+## getting cached data (inverse matrix)
+```
+
+```
+##      [,1] [,2]
+## [1,] -6.5    6
+## [2,]  5.5   -5
 ```
 
 
 #####2. 3 x 3 matrix
 
-```{r}
+
+```r
 source("cachematrix.R")
 M <- makeCacheMatrix(matrix(c(20, 13, 9, 51, 18, 33, 9, 101, 47), 3, 3))
 M$get()
+```
+
+```
+##      [,1] [,2] [,3]
+## [1,]   20   51    9
+## [2,]   13   18  101
+## [3,]    9   33   47
+```
+
+```r
 M$getinv() # no data on inverse matrix is cached yet 
+```
+
+```
+## NULL
+```
+
+```r
 cacheSolve(M)
+```
+
+```
+##              [,1]         [,2]         [,3]
+## [1,]  0.077382619  0.065341174 -0.155231961
+## [2,] -0.009272224 -0.026727652  0.059211550
+## [3,] -0.008307664  0.006254084  0.009427798
+```
+
+```r
 cacheSolve(M) # the data on inverse matrix is cached already
+```
+
+```
+## getting cached data (inverse matrix)
+```
+
+```
+##              [,1]         [,2]         [,3]
+## [1,]  0.077382619  0.065341174 -0.155231961
+## [2,] -0.009272224 -0.026727652  0.059211550
+## [3,] -0.008307664  0.006254084  0.009427798
 ```
 
 
 #####3. 4 x 4 matrix
 
-```{r}
+
+```r
 source("cachematrix.R")
 M <- makeCacheMatrix(matrix(c(15, 11, 34, 50, 19, 68, 44, 12, 30, 11, 56, 98, 88, 1, 26, 10), 4, 4))
 M$get()
+```
+
+```
+##      [,1] [,2] [,3] [,4]
+## [1,]   15   19   30   88
+## [2,]   11   68   11    1
+## [3,]   34   44   56   26
+## [4,]   50   12   98   10
+```
+
+```r
 M$getinv() # no data on inverse matrix is cached yet 
+```
+
+```
+## NULL
+```
+
+```r
 cacheSolve(M)
+```
+
+```
+##              [,1]         [,2]         [,3]         [,4]
+## [1,] -0.085666715 -0.179583600  0.357613044 -0.157968463
+## [2,]  0.006943442  0.029508340 -0.028894926  0.011073682
+## [3,]  0.041815295  0.088620384 -0.179581022  0.090074022
+## [4,]  0.010211551 -0.005971773  0.006502711 -0.006171519
+```
+
+```r
 cacheSolve(M) # the data on inverse matrix is cached already
+```
+
+```
+## getting cached data (inverse matrix)
+```
+
+```
+##              [,1]         [,2]         [,3]         [,4]
+## [1,] -0.085666715 -0.179583600  0.357613044 -0.157968463
+## [2,]  0.006943442  0.029508340 -0.028894926  0.011073682
+## [3,]  0.041815295  0.088620384 -0.179581022  0.090074022
+## [4,]  0.010211551 -0.005971773  0.006502711 -0.006171519
 ```
 
 
@@ -103,11 +216,27 @@ The inverse of a singular matrix, a matrix that incurs a determinant of zero (0)
 
 Example:
 
-```{r}
+
+```r
 source("cachematrix.R")
 M <- makeCacheMatrix(matrix(1:16, 4, 4))
 M$get()
+```
+
+```
+##      [,1] [,2] [,3] [,4]
+## [1,]    1    5    9   13
+## [2,]    2    6   10   14
+## [3,]    3    7   11   15
+## [4,]    4    8   12   16
+```
+
+```r
 det(M$get()) # determinant of the singular matrix
+```
+
+```
+## [1] 0
 ```
 
 The 'cacheSolve' function will produce the following error message:
