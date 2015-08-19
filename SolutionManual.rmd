@@ -1,0 +1,119 @@
+---
+output: 
+  html_document: 
+    theme: cerulean
+---
+# Solution Manual: R-Programming Assignment 2
+## Catching the Inverse of a Matrix
+
+###Keywords:
+Control Structure, Lexical scoping, R-Environment, inverse matrix, square matrix, singular matrix, 
+
+### Introduction:
+The following user defined functions produce and cache the inverse of a square matrix (invertible by definition).
+
+--in progress--
+
+### Matrix Inversion:
+
+--in progress--
+
+### Making the Cache Matrix:
+
+The following function creates a special "matrix' object that can cache its own "inverse matrix." The function takes a matrix input 'x' as an  argument and then creates an environment that can cache the inverse of that matrix.
+
+--steps in progress--
+
+```{r}
+makeCacheMatrix <- function(x = matrix()) {
+        IM <- NULL
+        set <- function(y) {
+                x <<- y
+                IM <<- NULL
+        }
+        get <- function() x
+        setinv <- function(inv) IM <<- inv
+        getinv <- function() IM
+        list(set = set, get = get, setinv = setinv, getinv = getinv)
+}
+```
+
+### Solving for the Inverse Matrix:
+
+The following function computes the inverse of the special "matrix" returned by 'makeCacheMatrix' function above. It first checks to see if the inverse matrix has already been produced. If so, then, it skips the computation  and gets the inverse matrix from the cache. Otherwise, it calculates the inverse of the original matrix and sets the output in the cache via the 'setinv' function.
+
+--details on solve function in progress--
+
+```{r}
+cacheSolve <- function(x, ...) {
+        IM <- x$getinv()
+        if(!is.null(IM)) {
+                message("getting cached data (inverse matrix)")
+                return (IM)
+        }
+        data <- x$get()
+        IM <- solve(data, ...)
+        x$setinv(IM)
+        IM
+}
+```
+
+### Test Outputs:
+
+#####1. 2 x 2 matrix
+
+```{r}
+source("cachematrix.R")
+M <- makeCacheMatrix(matrix(10:13, 2, 2))
+M$get()
+M$getinv() # no data on inverse matrix is cached yet
+cacheSolve(M)
+cacheSolve(M) # the data on inverse matrix is cached already
+```
+
+
+#####2. 3 x 3 matrix
+
+```{r}
+source("cachematrix.R")
+M <- makeCacheMatrix(matrix(c(20, 13, 9, 51, 18, 33, 9, 101, 47), 3, 3))
+M$get()
+M$getinv() # no data on inverse matrix is cached yet 
+cacheSolve(M)
+cacheSolve(M) # the data on inverse matrix is cached already
+```
+
+
+#####3. 4 x 4 matrix
+
+```{r}
+source("cachematrix.R")
+M <- makeCacheMatrix(matrix(c(15, 11, 34, 50, 19, 68, 44, 12, 30, 11, 56, 98, 88, 1, 26, 10), 4, 4))
+M$get()
+M$getinv() # no data on inverse matrix is cached yet 
+cacheSolve(M)
+cacheSolve(M) # the data on inverse matrix is cached already
+```
+
+
+### A Technical Note:
+
+The inverse of a singular matrix, a matrix that incurs a determinant of zero (0), cannot be calculated. Inverse of a singular matrix is not defined. R will produce the error, "system is exactly singular." in such cases. It is advisable to use a non-singular matrix for evaluating this exercise.
+
+Example:
+
+```{r}
+source("cachematrix.R")
+M <- makeCacheMatrix(matrix(1:16, 4, 4))
+M$get()
+det(M$get()) # determinant of the singular matrix
+```
+
+The 'cacheSolve' function will produce the following error message:
+
+```
+> cacheSolve(M)
+
+ Error in solve.default(data, ...) : 
+  Lapack routine dgesv: system is exactly singular: U[3,3] = 0 
+```
