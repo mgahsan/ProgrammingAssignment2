@@ -25,7 +25,6 @@ As only non-zero real numbers can have an inverse, in matrix algebra only non-si
 
 Consider the following 2 by 2 matrix:
 
-$$
 \[\begin{array}{l}
 X = \left[ {\begin{array}{*{20}{c}}
 a&b\\
@@ -39,7 +38,6 @@ d&{ - b}\\
 { - c}&a
 \end{array}} \right]
 \end{array}\]
-$$
 
 For the above square matrix $X$, an inverse $X^{-1}$ exists, only if $ad - bc \ne 0$. Also note that $(ad - bc)$ is the determinant of $X$.
 
