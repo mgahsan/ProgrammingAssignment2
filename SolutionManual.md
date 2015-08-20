@@ -25,19 +25,21 @@ As only non-zero real numbers can have an inverse, in matrix algebra only non-si
 
 Consider the following 2 by 2 matrix:
 
-\[\begin{array}{l}
-X = \left[ {\begin{array}{*{20}{c}}
-a&b\\
-c&d
-\end{array}} \right]\\
-{X^{ - 1}} = {\left[ {\begin{array}{*{20}{c}}
-a&b\\
-c&d
-\end{array}} \right]^{ - 1}} = \frac{1}{{ad - bc}}\left[ {\begin{array}{*{20}{c}}
-d&{ - b}\\
-{ - c}&a
-\end{array}} \right]
-\end{array}\]
+$$\eqalign{
+  & X = \left[ {\matrix{
+   a & b  \cr 
+   c & d  \cr 
+
+ } } \right]  \cr 
+  & {X^{ - 1}} = {\left[ {\matrix{
+   a & b  \cr 
+   c & d  \cr 
+
+ } } \right]^{ - 1}} = {1 \over {ad - bc}}\left[ {\matrix{
+   d & { - b}  \cr 
+   { - c} & a  \cr 
+
+ } } \right] \cr} $$
 
 For the above square matrix $X$, an inverse $X^{-1}$ exists, only if $ad - bc \ne 0$. Also note that $(ad - bc)$ is the determinant of $X$.
 
