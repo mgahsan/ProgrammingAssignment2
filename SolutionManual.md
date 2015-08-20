@@ -1,5 +1,13 @@
+<head>
+...
+    <script type="text/javascript"
+            src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+...
+</head>
+
 # Solution Manual: R-Programming Assignment 2
-## Catching the Inverse of a Matrix
+## Caching the Inverse of a Matrix
 
 ###Keywords
 Control Structure, Lexical scoping, R-Environment, Inverse Matrix, Square Matrix, Singular Matrix
@@ -39,7 +47,7 @@ $$
 
 For the above square matrix $X$, an inverse $X^{-1}$ exists, only if $ad - bc \ne 0$. Also note that $(ad - bc)$ is the determinant of $X$.
 
-One simple but necessary point to consider for this particular assignment is that the inverse of an invertible numatic matrix is as simple as dividing the identity matrix with the matrix itself, i.e., $X^{-1} X = I$ or, $X^{-1} = $ $I \over X$.
+One simple but necessary point to consider for this particular assignment is that the inverse of an invertible numatic matrix is as simple as dividing the identity matrix with the matrix itself, i.e., $X^{-1} X = I$ or, $X^{-1}$ $=$ $I \over X$.
 
 ### Inverse Matrix in R
 
@@ -50,14 +58,9 @@ The `solve` function in R is typically used to solve a linear system. Following 
 ```
 solve(a, b, ...)
 
-a
-A square numeric or complex matrix containing the coefficients of the linear system.
-
-b
-A numeric or complex vector or matrix giving the right-hand side of the linear system.
-
-...
-Further arguments passed to or from other methods
+a : A square numeric or complex matrix containing the coefficients of the linear system.
+b : A numeric or complex vector or matrix giving the right-hand side of the linear system.
+... : Further arguments passed to or from other methods
 ```
 This function basically solves the linear equation $a * x = b$ for $x$; where $b$ can be a matrix or a vector. The argument $b$ is also defined such that if it is not included as an argument in the function, it is assumed to be an identity matrix by R. This characteristic of $b$ allows the calculation on an inverse of $a$ by using the `solve(a)` function.
 
@@ -147,9 +150,7 @@ cacheSolve(M) # the data on inverse matrix is cached already
 
 ```
 ## getting cached data (inverse matrix)
-```
 
-```
 ##      [,1] [,2]
 ## [1,] -6.5    6
 ## [2,]  5.5   -5
@@ -197,9 +198,7 @@ cacheSolve(M) # the data on inverse matrix is cached already
 
 ```
 ## getting cached data (inverse matrix)
-```
 
-```
 ##              [,1]         [,2]         [,3]
 ## [1,]  0.077382619  0.065341174 -0.155231961
 ## [2,] -0.009272224 -0.026727652  0.059211550
@@ -250,9 +249,7 @@ cacheSolve(M) # the data on inverse matrix is cached already
 
 ```
 ## getting cached data (inverse matrix)
-```
 
-```
 ##              [,1]         [,2]         [,3]         [,4]
 ## [1,] -0.085666715 -0.179583600  0.357613044 -0.157968463
 ## [2,]  0.006943442  0.029508340 -0.028894926  0.011073682
@@ -290,7 +287,7 @@ det(M$get()) # determinant of the singular matrix
 ## [1] 0
 ```
 
-The 'cacheSolve' function will produce the following error message:
+The `cacheSolve` function will produce the following error message:
 
 ```
 > cacheSolve(M)
