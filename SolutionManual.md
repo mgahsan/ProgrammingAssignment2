@@ -1,26 +1,28 @@
-# Solution Manual: R-Programming Assignment 2
-
-## Caching the Inverse of a Matrix
-
-
+---
+output:
+  html_document:
+    keep_md: yes
+  pdf_document: default
+---
+# Programming Assignment 2: Lexical Scoping
+## CACHING THE INVERSE OF A MATRIX
 
 ###Keywords
 
-Control Structure, Lexical scoping, R-Environment, Inverse Matrix, Square Matrix, Singular Matrix
+Control Structure, Dynamic Scoping, Global Environment, Inverse Matrix, Lexical scoping, Parent Environment, Parent Frame, R, Square Matrix, Singular Matrix, Scoping Rules, Static Scoping
 
 ### Introduction:
 
-The following user defined functions produce and cache the inverse of a square matrix (invertible by definition).
+This programming exercise constructs an R function that is able to cache potentially time consuming computations. Matrix inversion is typically a costly computation given that inverse of a matrix need to be used multiple times in solving for a linear system or even when using it in a loop. Taking advantage of the scoping rules of the R language, this programming exercise creates a preserve state inside of an R object, which computes the inverse of a matrix and can cache it in the memory for future use.
 
---in progress--
+This short note begins with discussing the mathematical properties of an invertible matrix and how an inverse matrix is computed in R. It then discusses the core mechanism of the R function-pair that are constructed and their implication regarding the scoping rules. The write-up ends with presenting some outputs to evaluate the mechanism.
 
 
 ### Inverse Matrix
 
-If $A$ is a square ($n * n$) and non-singular ($\det(A) \ne 0$) matrix then an inverse matrix of $A$ is denoted by $A^{-1}$ such that $AA^{-1}=A^{-1}A=I$; where $I$ is the identity matrix.
+If $A$ is a square ($n \times n$) and non-singular ($\det(A) \ne 0$) matrix then an inverse matrix of $A$ is denoted by $A^{-1}$ such that $AA^{-1}=A^{-1}A=I$; where $I$ is the identity matrix.
 
 As only non-zero real numbers can have an inverse, in matrix algebra only non-singular square matrices have an inverse. Therefore, for $A$ to be invertible a matrix $A^{-1}$ must exist.
-
 
 #####Example:
 
@@ -44,7 +46,7 @@ $$
 
 For the above square matrix $X$, an inverse $X^{-1}$ exists, only if $ad - bc \ne 0$. Also note that $(ad - bc)$ is the determinant of $X$.
 
-One simple but necessary point to consider for this particular assignment is that the inverse of an invertible numatic matrix is as simple as dividing the identity matrix with the matrix itself, i.e., $X^{-1} X = I$ or, $X^{-1}$ $=$ $I \over X$.
+One simple but necessary point to consider for this particular assignment is that the inverse of an invertible numeric matrix is as simple as dividing the identity matrix with the matrix itself, i.e., $X^{-1} X = I$ or, ${X^{ - 1}} = {I \over X}$.
 
 
 ### Inverse Matrix in R
@@ -59,20 +61,23 @@ solve(a, b, ...)
 a : A square numeric or complex matrix containing the coefficients of the linear system.
 b : A numeric or complex vector or matrix giving the right-hand side of the linear system.
 ... : Further arguments passed to or from other methods
-
 ```
 
-This function basically solves the linear equation $a * x = b$ for $x$; where $b$ can be a matrix or a vector. The argument $b$ is also defined such that if it is not included as an argument in the function, it is assumed to be an identity matrix by R. This characteristic of $b$ allows the calculation on an inverse of $a$ by using the `solve(a)` function.
+This function basically solves the linear equation $a \times x = b$ for $x$; where $b$ can be a matrix or a vector. The argument $b$ is also defined such that if it is not included as an argument in the function, it is assumed to be an identity matrix by R. This characteristic of $b$ allows the calculation on an inverse of $a$ by using the `solve(a)` function.
 
-When $b$ is missing in the function the generic equation becomes $a*x=I$ or, $x =$ $I \over a$ $=a^{-1}$. Therefore, given that $a$ is an invertible square matrix, $x$ is simply the inverse of that matrix.
+When $b$ is missing in the function the generic equation becomes $a \times x=I$ or, $x = {I \over a} = {a^{ - 1}}$. Therefore, given that $a$ is an invertible square matrix, $x$ is simply the inverse of that matrix.
 
 
-### Making the Cache Matrix
+### The Cache Matrix
 
-The following function creates a special "matrix' object that can cache its own "inverse matrix." The function takes a matrix input 'x' as an  argument and then creates an environment that can cache the inverse of that matrix.
+The `makeCacheMatrix` function creates a special "matrix' object that can cache its own inverse matrix. The function takes a matrix input 'x' as an  argument and then creates an environment that can both 'produce and cache the inverse of that matrix' and 'retrieve it from memory' if it is already cached.
 
---steps in progress--
+The 'Global Environment' created by the function provides the following functionality:
 
+1. Set the value of the matrix - `set`
+2. Get the value of the matrix - `get`
+3. Set the value of the inverse matrix - `setinv`
+4. Get the value of the inverse matrix - `getinv`
 
 ```r
 makeCacheMatrix <- function(x = matrix()) {
@@ -89,10 +94,7 @@ makeCacheMatrix <- function(x = matrix()) {
 ```
 ### Solving for the Inverse Matrix
 
-The following function computes the inverse of the special "matrix" returned by `makeCacheMatrix` function above. It first checks to see if the inverse matrix has already been produced. If so, then, it skips the computation  and gets the inverse matrix from the cache. Otherwise, it calculates the inverse of the original matrix and sets the output in the cache via the `setinv` function.
-
---details on solve function in progress--
-
+The `cacheSolve` function solves for the inverse of the 'special matrix' returned by `makeCacheMatrix` function above. Using an if-else control structure, it first checks to see if the inverse matrix has already been produced. If so, then, it skips the computation and gets the inverse matrix from the cache via the `getinv` function. Otherwise, it computes the inverse of the original matrix and sets the output in the cache via the `setinv` function.
 
 ```r
 cacheSolve <- function(x, ...) {
@@ -106,8 +108,25 @@ cacheSolve <- function(x, ...) {
         x$setinv(IM)
         IM
 }
-
 ```
+
+###Implication of Scoping Rules
+
+Scoping rules followed by R-language is crucial to the design of the mechanism discussed so far. Scoping rules determine how a value is bound to a free variable (not an argument) in a function. The scoping rules followed by R is known as 'lexical scoping' which is also known as 'static scoping'.
+
+Under lexical scoping, values for free variables are primarily searched in the environment in which the function was defined. Such an environment is known as the 'global environment' which typically refers to an environment developed on the user's work space.
+
+An exact opposite to lexical scoping is dynamic scoping. Under dynamic scoping, values for free variables are primarily searched in the environment from which the function was called. In R such an environment is known as the 'parent frame'. Example of a parent frame can be an R package.
+
+![Scoping Rules](C:\users\mgahsan\desktop\Lexical Scoping 2.png)
+
+Coming back to lexical scoping, if a value cannot be found in the environment in which the function was defined then R will look for it in the parent environment and then the parent of the parent environment and so on until it reaches the top-level environment. If a function is defined outside the global environment then the top level environment is the global environment (work space) itself. However if the function is defined in a package then the top-level environment is the namespace of that package. After the top level environment is reached, R will look for the value in the search list until it hits the 'empty environment' which is usually after the base package. R will come up with an error message if the value cannot be found after reaching the empty environment.
+
+An interesting feature of R is that a function can be defined within a function. In other words, a function can return another function as an output. For the function which is defined within another function, the environment is not the global environment. The inside of the host function the environment in which the function was defined. Therefore, R will first search for a value in the host function. This feature of R functions combined with the manipulation of scoping rules actually makes this kind of programming exercise possible.
+
+The figure above provides an sketch as to how the scoping rules would treat the assignment in hand. Both `makeCacheMatrix` and `cacheSolve` functions are global objects as for both of them the 'defining environment' is the global environment. For the `set` function  defined inside the `makeCacheMatrix` function the defining environment is the host itself. To bind a value to the `set` function, R will first look inside the the host function `makeCacheMatri` and then the global environment. Similarly, for a free variable inside `set`, R will first look for a value inside the function itself, then in its parent function and finally in the top-level or global environment.
+
+
 
 ### Test Outputs
 
@@ -162,7 +181,7 @@ M$get()
 ## [3,]    9   33   47
 ```
 ```r
-M$getinv() # no data on inverse matrix is cached yet 
+M$getinv() # no data on inverse matrix is cached yet
 ```
 ```
 ## NULL

@@ -2,15 +2,23 @@
 
 ## Introduction:
 
-## The following user defined functions produce and cache the inverse of a 
-## square matrix (invertible by definition). 
+## The following user defined function-pair produce and cache 
+## the inverse of an invertible (det != 0) square matrix (n x n). 
 
 ## Making the Cache Matrix:
 
-## The following function creates a special "matrix' object that can cache
-## its own "inverse matrix." The function takes a matrix input 'x' as an 
-## argument and then creates an environment that can cache the inverse of 
-## that matrix.
+## The following function creates a special 'matrix' object which 
+## takes a matrix 'x' as an argument and then creates an environment 
+## that enables both caching and retrieving the inverse of the input 
+## matrix.  
+
+## The 'Global Environment' created by the function provides the 
+## following functionality:
+
+## 1. Set the value of the matrix - `set`
+## 2. Get the value of the matrix - `get`
+## 3. Set the value of the inverse matrix - `setinv`
+## 4. Get the value of the inverse matrix - `getinv`
 
 makeCacheMatrix <- function(x = matrix()) {
        
@@ -28,12 +36,13 @@ makeCacheMatrix <- function(x = matrix()) {
 
 ## Solving for the Inverse Matrix:
 
-## The following function computes the inverse of the special "matrix" 
-## returned by 'makeCacheMatrix' function above. It first checks to see 
-## if the inverse natrix has already been produced. If so, then, it skips 
-## the computation  and gets the inverse matrix from the cache. Otherwise, 
-## it calculates the inverse of the original matrix and sets the output
-## in the cache via the 'setinv' function.
+## The `cacheSolve` function solves for the inverse of the matrix 
+## returned by `makeCacheMatrix` function above. Using an if-else 
+## control structure, it first checks to see if the inverse matrix 
+## has already been produced. If so, then, it skips the computation 
+## and gets the inverse matrix from the cache via the `getinv`. 
+## Otherwise, it computes the inverse of the original matrix 'x' 
+## and stores the output in cache memory via the `setinv`.
 
 cacheSolve <- function(x, ...) {
         
@@ -52,15 +61,20 @@ cacheSolve <- function(x, ...) {
         IM
 }
 
-## Technical Notes:
+## A Technical Notes:
 
-## 1.
-## The inverse of a singular matrix, a matrix that incurs a determinant
-## of zero (0), cannot be calculated. Inverse of a singular matrix is not 
-## defined. R will produce the error, "system is exactly singular." in
-## such cases. It is adviceable to use a non-singular matrix for evaluating 
-## this excercise.
+## The inverse of a singular matrix, a matrix that has a determinant
+## of zero (0), cannot be calculated. Inverse of a singular matrix is 
+## not defined. R will produce the error, "system is exactly singular." 
+## in such cases. It is advisable to use a non-singular matrix for 
+## evaluation this assignment.
 
-## 2.
-## A seperate markdown file describing the functionality and test results
-## for this script has been uploaded to the repository for further reference.
+## Further Reading and Evaluation:
+
+## A detailed write-up on construction and evaluation of this 
+## script has been uploaded under the same repository in both PDF 
+## and Markdown formats. The document discusses topics like Matrix
+## Inversion, 'Solve' Function in R, Implication of Scoping Rules,
+## Test Outputs and Evaluation etc. The document is uploaded by 
+## the name of "SolutionManual." Please put a star on the repo
+## if you like it. THANKS !
