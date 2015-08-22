@@ -12,8 +12,9 @@
 ## that enables both caching and retrieving the inverse of the input 
 ## matrix.  
 
-## The 'Global Environment' created by the function provides the 
-## following functionality:
+## The function creates a list of 4 other functions in the global 
+## environment/ user's workspace which provies following 
+## functionality:
 
 ## 1. Set the value of the matrix - `set`
 ## 2. Get the value of the matrix - `get`
