@@ -70,22 +70,21 @@ img {
 <div id="programming-assignment-2-lexical-scoping" class="section level1">
 <h1>Programming Assignment 2: Lexical Scoping</h1>
 <div id="caching-the-inverse-of-a-matrix" class="section level2">
-<h2>CACHING THE INVERSE OF A MATRIX</h2>
-<div id="keywords" class="section level3">
-<h3>Keywords</h3>
-<p>Control Structure, Dynamic Scoping, Global Environment, Inverse Matrix, Lexical scoping, Parent Environment, Parent Frame, R, Square Matrix, Singular Matrix, Scoping Rules, Static Scoping</p>
-</div>
+<h2>Caching The Inverse of a Matrix</h2>
+<p><em>M. G. Ahsan | August 20, 2015</em></p>
+<hr />
+<p><strong>Key Words:</strong> Control Structure, Dynamic Scoping, Global Environment, Inverse Matrix, Lexical scoping, Parent Environment, Parent Frame, R, Square Matrix, Singular Matrix, Scoping Rules, Static Scoping</p>
+<p>[TOC]</p>
 <div id="introduction" class="section level3">
 <h3>Introduction:</h3>
-<p>This programming exercise constructs an R function that is able to cache potentially time consuming computations. Matrix inversion is typically a costly computation given that inverse of a matrix need to be used multiple times in solving for a linear system or even when using it in a loop. Taking advantage of the scoping rules of the R language, this programming exercise creates a preserve state inside of an R object, which computes the inverse of a matrix and can cache it in the memory for future use.</p>
-<p>This short note begins with discussing the mathematical properties of an invertible matrix and how an inverse matrix is computed in R. It then discusses the core mechanism of the R function-pair that are constructed and their implication regarding the scoping rules. The write-up ends with presenting some outputs to evaluate the mechanism.</p>
+<p>This programming exercise constructs an R function system that is able to cache potentially time consuming computations. Matrix inversion is usually a costly computation given that inverse of a matrix needs to be used multiple times when solving for a linear system or even when using it in a loop. Taking advantage of the scoping rules of the R language, this programming exercise creates a preserve state inside of an R object, which computes the inverse of a matrix and can cache it in the memory for future use.</p>
+<p>This short note begins with introducing the mathematical properties of invertible matrices as well as how an inverse matrix is computed in R. It then presents the core mechanism of the R function-pair that are constructed. The body of the note ends by discussing the implication of scoping rules in this sort of a project.</p>
+<p>The document also includes two detailed appendices that demonstrate step by step evaluation of the functions (<strong>Appendix A</strong>) and reports some test results (<strong>Appendix B</strong>)using different variations of square matrices.</p>
 </div>
 <div id="inverse-matrix" class="section level3">
 <h3>Inverse Matrix</h3>
 <p>If <span class="math inline">\(A\)</span> is a square (<span class="math inline">\(n \times n\)</span>) and non-singular (<span class="math inline">\(\det(A) \ne 0\)</span>) matrix then an inverse matrix of <span class="math inline">\(A\)</span> is denoted by <span class="math inline">\(A^{-1}\)</span> such that <span class="math inline">\(AA^{-1}=A^{-1}A=I\)</span>; where <span class="math inline">\(I\)</span> is the identity matrix.</p>
 <p>As only non-zero real numbers can have an inverse, in matrix algebra only non-singular square matrices have an inverse. Therefore, for <span class="math inline">\(A\)</span> to be invertible a matrix <span class="math inline">\(A^{-1}\)</span> must exist.</p>
-<div id="example" class="section level5">
-<h5>Example:</h5>
 <p>Consider the following 2 by 2 matrix:</p>
 <p><span class="math display">\[
 \begin{array}{c}
@@ -105,7 +104,6 @@ d&amp;{ - b}\\
 <p>For the above square matrix <span class="math inline">\(X\)</span>, an inverse <span class="math inline">\(X^{-1}\)</span> exists, only if <span class="math inline">\(ad - bc \ne 0\)</span>. Also note that <span class="math inline">\((ad - bc)\)</span> is the determinant of <span class="math inline">\(X\)</span>.</p>
 <p>One simple but necessary point to consider for this particular assignment is that the inverse of an invertible numeric matrix is as simple as dividing the identity matrix with the matrix itself, i.e., <span class="math inline">\(X^{-1} X = I\)</span> or, <span class="math inline">\({X^{ - 1}} = {I \over X}\)</span>.</p>
 </div>
-</div>
 <div id="inverse-matrix-in-r" class="section level3">
 <h3>Inverse Matrix in R</h3>
 <p>There are several methods that can be used to calculate inverse of a matrix in R. For this assignment though the scope is confined to the <code>solve</code> function.</p>
@@ -121,7 +119,7 @@ b : A numeric or complex vector or matrix giving the right-hand side of the line
 <div id="the-cache-matrix" class="section level3">
 <h3>The Cache Matrix</h3>
 <p>The <code>makeCacheMatrix</code> function creates a special “matrix’ object that can cache its own inverse matrix. The function takes a matrix input ‘x’ as an argument and then creates an environment that can both ‘produce and cache the inverse of that matrix’ and ‘retrieve it from memory’ if it is already cached.</p>
-<p>The ‘Global Environment’ created by the function provides the following functionality:</p>
+<p>The list of functions created in the Global Environment’ provides the following functionality:</p>
 <ol style="list-style-type: decimal">
 <li>Set the value of the matrix - <code>set</code></li>
 <li>Get the value of the matrix - <code>get</code></li>
@@ -154,21 +152,182 @@ b : A numeric or complex vector or matrix giving the right-hand side of the line
         x$setinv(IM)
         IM
 }</code></pre>
+<p><strong>Appendix A</strong> discusses how these system of functions work step by step through different environments abiding R’s scoping rules. Test outputs using matrices of different dimensions have been presented in <strong>Appendix B</strong>.</p>
 </div>
 <div id="implication-of-scoping-rules" class="section level3">
 <h3>Implication of Scoping Rules</h3>
-<p>Scoping rules followed by R-language is crucial to the design of the mechanism discussed so far. Scoping rules determine how a value is bound to a free variable (not an argument) in a function. The scoping rules followed by R is known as ‘lexical scoping’ which is also known as ‘static scoping’.</p>
-<p>Under lexical scoping, values for free variables are primarily searched in the environment in which the function was defined. Such an environment is known as the ‘global environment’ which typically refers to an environment developed on the user’s work space.</p>
-<p>An exact opposite to lexical scoping is dynamic scoping. Under dynamic scoping, values for free variables are primarily searched in the environment from which the function was called. In R such an environment is known as the ‘parent frame’. Example of a parent frame can be an R package.</p>
+<p>Scoping rules followed by R are crucial to the design of the mechanism discussed so far. Scoping rules determine how a value is bound to a free variable (not a formal argument) in a function. The scoping rules followed by R are known as ‘lexical scoping’ which is also known as ‘static scoping’.</p>
+<p>Under lexical scoping, values for free variables are primarily searched in the environment in which the function was defined. Such an environment is is typically the ‘global environment’ or the user’s workspace.</p>
+<p>An exact opposite to lexical scoping is dynamic scoping. Under dynamic scoping, values for free variables are primarily searched in the environment from which the function was called. In R such an environment is known as the ‘parent frame’. Example of a parent frame can be an R-package.</p>
 <p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAxcAAAHHCAYAAADNgaU6AABLRElEQVR42u3dX8hdV534/14X2qJCb1IMelN6UXpnLkRkYBRGviAEW/CqMp2JmRArGSgWUpO5UNG0OAzBXqgIGYqgxsSWuajRttJgStTUlkmprUMGrJCbUuzExKZp3N/fOt/femY9K2v/Pfv8f71h0eY85+y99j77fNbnvf7sfVMFAAAAACNwk1MAAAAAgFwAAAAAIBcAAAAAyAUAAAAAkAsAAAAA5AIAAAAAuQAAAABALgAAAACAXAAAAAAgFwAAAADIBQAAAAByAQAAAADkAgAAAAC5AAAAAEAuAAAAAIBcAAAAACAXAAAAAMgFAAAAAHIBAAAAAOQCAAAAALkAAAAAQC4AAAAAkAsAAAAAIBcAAAAAyAUAAAAAcvH/cc8991Q33XSToijKWpSuPPDAA5P3v//979/67I4dO5xDZauEawQAyEXfjd5kQATAmgTJjvEsJo8f+chHqq9//evVE088MSnPPfdc9fvf/17Z0BK+/3gtfOELX9iSTZIBgFyQCwDkovY9d911F5FQOpWDBw9WH/zgB6ubb7659doyE0BRlFUawScXADBlPAt/v+WWW6pz585JnJXOJVwvd9xxR6frCwCWvZONXADACPEsikWY8iJhVvqWcN2E66ftGgMAciEYAljzoBoXbxMLZVrBaFqDoT0FQC4EQwAbEFTD67t375YgK1OXcB01XWcAQC4EQwAbIBePP/645FiZuoTriFwAIBfkAsAGB9UwV97doZSxbldLLgCQC3IBYIODanhdYqyMVcgFAHJBLgCQC0UhFwDIBbkAAHKhkAsAIBcAQC4UcgEA5AIAyIWikAsA5IJcABBUyYVCLgBoB8kFAJALhVwAALkAAHKhkAsAIBcAQC6WvfzkJz+ZHEsox44d2+gEf5HnglwAIBfkAgC5qC0PP/zwVqKal6997WtzT5xfe+216rOf/exk/5///OeXIqFO952WtH7kQnsKgFwIhgDIxf8vF5/61KeqV155ZeG98nVysagSz8+OHTuql19+eVsd09dMi9KeAiAXgiEActEiF3XJfv65/H3f+ta3tnrXS0l4aTTgq1/96tY28hGC06dPVx/+8Idv6K0vbSf9e996pSXdZ2kU55FHHtn2+VJd0s/1qes//MM/bDsXaV3zc9H3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" alt="Scoping Rules" /></p>
-<p>Coming back to lexical scoping, if a value cannot be found in the environment in which the function was defined then R will look for it in the parent environment and then the parent of the parent environment and so on until it reaches the top-level environment. If a function is defined outside the global environment then the top level environment is the global environment (work space) itself. However if the function is defined in a package then the top-level environment is the namespace of that package. After the top level environment is reached, R will look for the value in the search list until it hits the ‘empty environment’ which is usually after the base package. R will come up with an error message if the value cannot be found after reaching the empty environment.</p>
-<p>An interesting feature of R is that a function can be defined within a function. In other words, a function can return another function as an output. For the function which is defined within another function, the environment is not the global environment. The inside of the host function the environment in which the function was defined. Therefore, R will first search for a value in the host function. This feature of R functions combined with the manipulation of scoping rules actually makes this kind of programming exercise possible.</p>
-<p>The figure above provides an sketch as to how the scoping rules would treat the assignment in hand. Both <code>makeCacheMatrix</code> and <code>cacheSolve</code> functions are global objects as for both of them the ‘defining environment’ is the global environment. For the <code>set</code> function defined inside the <code>makeCacheMatrix</code> function the defining environment is the host itself. To bind a value to the <code>set</code> function, R will first look inside the the host function <code>makeCacheMatri</code> and then the global environment. Similarly, for a free variable inside <code>set</code>, R will first look for a value inside the function itself, then in its parent function and finally in the top-level or global environment.</p>
+<p>Coming back to lexical scoping, if a value cannot be found in the environment in which the function was defined then R will look for it in its parent environment and then the parent of the parent environment and so on until a match is found. If a function is defined inside the global environment (workspace) then the top level environment is the global environment itself. However if the function is defined in a package then the top-level environment is the namespace of that package. After the top level environment has been searched, R will look for the value in the search list until it hits the ‘empty environment’ which is the parent to the base package. R will come up with an error message if the value cannot be found after reaching the empty environment. The empty environment does not have a parent environment.</p>
+<p>An interesting feature of R is that a function can be defined within a function. In other words, a function can return another function as an output. For the function which is defined within another function, the primary environment is the inside of the host function. R usually defines a temporary environment inside the host whenever such a system of function is sourced. R will first search for a value in the host function, then in the global environment, and then across the search list until a match is found. This feature of R functions combined with the manipulation of scoping rules makes it possible to undertake the project in hand and many other complex programming projects.</p>
+<p>The figure above provides an sketch as to how the scoping rules would treat the assignment in hand. Both <code>makeCacheMatrix</code> and <code>cacheSolve</code> functions are global objects as for both of them the ‘defining environment’ is the global environment. For the <code>set</code>, <code>get</code>, <code>setinv</code> and <code>getinv</code> functions the defining environment is the inside of the <code>makeCacheMatrix</code> function. To bind a value to the <code>set</code> function, R will first look inside the the host function <code>makeCacheMatri</code> and then the global environment. Similarly, for a free variable inside <code>set</code>, R will first look for a value inside the function itself, then in its parent function and finally in the global environment.</p>
+<p>A more technical demonstration of R environments has been presented in <strong>Appendix A</strong>, using the <code>environment</code> function in R and some of its applications. The <code>parent.env</code> function has been used to demonstrate the scoping hierarchy.</p>
 </div>
-<div id="test-outputs" class="section level3">
-<h3>Test Outputs</h3>
-<div id="x-2-matrix" class="section level5">
-<h5>1. 2 x 2 matrix</h5>
+</div>
+<div id="appendix-a-r-environment-and-scoping-hierarchy" class="section level2">
+<h2>Appendix A: R-Environment and Scoping Hierarchy</h2>
+<div id="the-construct-of-makecachematrix" class="section level3">
+<h3>The Construct of ‘makeCacheMatrix’</h3>
+<pre class="r"><code>source(&quot;cachematrix.R&quot;)
+makeCacheMatrix()</code></pre>
+<pre><code>## $set
+## function (y) 
+## {
+##     x &lt;&lt;- y
+##     IM &lt;&lt;- NULL
+## }
+## &lt;environment: 0x000000000a51d448&gt;
+## 
+## $get
+## function () 
+## x
+## &lt;environment: 0x000000000a51d448&gt;
+## 
+## $setinv
+## function (inv) 
+## IM &lt;&lt;- inv
+## &lt;environment: 0x000000000a51d448&gt;
+## 
+## $getinv
+## function () 
+## IM
+## &lt;environment: 0x000000000a51d448&gt;</code></pre>
+</div>
+<div id="global-environment" class="section level3">
+<h3>Global Environment</h3>
+<pre class="r"><code>environment(makeCacheMatrix)</code></pre>
+<pre><code>## &lt;environment: R_GlobalEnv&gt;</code></pre>
+<pre class="r"><code>environment(cacheSolve)</code></pre>
+<pre><code>## &lt;environment: R_GlobalEnv&gt;</code></pre>
+<pre class="r"><code>ls(environment(makeCacheMatrix))</code></pre>
+<pre><code>## [1] &quot;cacheSolve&quot;      &quot;makeCacheMatrix&quot;</code></pre>
+<pre class="r"><code>ls.str(environment(makeCacheMatrix))</code></pre>
+<pre><code>## cacheSolve : function (x, ...)
+## makeCacheMatrix : function (x = matrix())</code></pre>
+</div>
+<div id="how-the-system-of-functions-work" class="section level3">
+<h3>How the System of Functions Work</h3>
+<div id="making-the-special-matrix" class="section level4">
+<h4>Making the Special “Matrix”</h4>
+<pre class="r"><code>M &lt;- makeCacheMatrix(matrix(c(13, 5, 18, 10), 2, 2))
+ls(environment(makeCacheMatrix))</code></pre>
+<pre><code>## [1] &quot;cacheSolve&quot;      &quot;M&quot;               &quot;makeCacheMatrix&quot;</code></pre>
+<pre class="r"><code>ls.str(environment(makeCacheMatrix))</code></pre>
+<pre><code>## cacheSolve : function (x, ...)  
+## M : List of 4
+##  $ set   :function (y)  
+##  $ get   :function ()  
+##  $ setinv:function (inv)  
+##  $ getinv:function ()  
+## makeCacheMatrix : function (x = matrix())</code></pre>
+</div>
+<div id="environment-of-the-subfunctions-before-implementing-cachesolve" class="section level4">
+<h4>Environment of the Subfunctions Before Implementing ‘cacheSolve’</h4>
+<pre class="r"><code>environment(M$set)</code></pre>
+<pre><code>## &lt;environment: 0x0000000007658c40&gt;</code></pre>
+<pre class="r"><code>environment(M$get)</code></pre>
+<pre><code>## &lt;environment: 0x0000000007658c40&gt;</code></pre>
+<pre class="r"><code>environment(M$setinv)</code></pre>
+<pre><code>## &lt;environment: 0x0000000007658c40&gt;</code></pre>
+<pre class="r"><code>environment(M$getinv)</code></pre>
+<pre><code>## &lt;environment: 0x0000000007658c40&gt;</code></pre>
+<pre class="r"><code>ls(environment(M$set))</code></pre>
+<pre><code>## [1] &quot;get&quot;    &quot;getinv&quot; &quot;IM&quot;     &quot;set&quot;    &quot;setinv&quot; &quot;x&quot;</code></pre>
+<pre class="r"><code>ls.str(environment(M$set))</code></pre>
+<pre><code>## get : function ()  
+## getinv : function ()  
+## IM :  NULL
+## set : function (y)  
+## setinv : function (inv)  
+## x :  num [1:2, 1:2] 13 5 18 10</code></pre>
+</div>
+<div id="extracting-the-inputed-matrix-and-its-inverse-before-cachesolve" class="section level4">
+<h4>Extracting the Inputed Matrix and Its Inverse Before ‘cacheSolve’</h4>
+<pre class="r"><code>M$get()</code></pre>
+<pre><code>##      [,1] [,2]
+## [1,]   13   18
+## [2,]    5   10</code></pre>
+<pre class="r"><code>M$getinv()</code></pre>
+<pre><code>## NULL</code></pre>
+</div>
+<div id="implementing-cachesolve" class="section level4">
+<h4>Implementing ‘cacheSolve’</h4>
+<pre class="r"><code>cacheSolve(M)</code></pre>
+<pre><code>##        [,1]   [,2]
+## [1,]  0.250 -0.450
+## [2,] -0.125  0.325</code></pre>
+</div>
+<div id="environment-of-the-subfunctions-after-implementing-cachesolve" class="section level4">
+<h4>Environment of the Subfunctions After Implementing ‘cacheSolve’</h4>
+<pre class="r"><code>ls(environment(M$set))</code></pre>
+<pre><code>## [1] &quot;get&quot;    &quot;getinv&quot; &quot;IM&quot;     &quot;set&quot;    &quot;setinv&quot; &quot;x&quot;</code></pre>
+<pre class="r"><code>ls.str(environment(M$set))</code></pre>
+<pre><code>## get : function ()  
+## getinv : function ()  
+## IM :  num [1:2, 1:2] 0.25 -0.125 -0.45 0.325
+## set : function (y)  
+## setinv : function (inv)  
+## x :  num [1:2, 1:2] 13 5 18 10</code></pre>
+</div>
+<div id="extracting-the-inputed-matrix-and-its-inverse-after-cachesolve" class="section level4">
+<h4>Extracting the Inputed Matrix and its Inverse After ‘cacheSolve’</h4>
+<pre class="r"><code>M$get()</code></pre>
+<pre><code>##      [,1] [,2]
+## [1,]   13   18
+## [2,]    5   10</code></pre>
+<pre class="r"><code>M$getinv()</code></pre>
+<pre><code>##        [,1]   [,2]
+## [1,]  0.250 -0.450
+## [2,] -0.125  0.325</code></pre>
+</div>
+<div id="getting-the-inverse-from-the-cache" class="section level4">
+<h4>Getting the Inverse From the Cache</h4>
+<pre class="r"><code>cacheSolve(M)</code></pre>
+<pre><code>## getting cached data (inverse matrix)</code></pre>
+<pre><code>##        [,1]   [,2]
+## [1,]  0.250 -0.450
+## [2,] -0.125  0.325</code></pre>
+</div>
+</div>
+<div id="scoping-hierarchy" class="section level3">
+<h3>Scoping Hierarchy</h3>
+<p>Scoping will continue till it reaches the ‘base environment’ unless a match is found on the way. The parent for the base is typically the empty environment. When scoping reaches the empty environment, the process stops. An empty environment does not have a parent. Base, Global and Empty are system environments.</p>
+<pre class="r"><code>beta &lt;- environment(M$set)
+beta</code></pre>
+<pre><code>## &lt;environment: 0x0000000007658c40&gt;</code></pre>
+<pre class="r"><code>alpha &lt;- parent.env(beta)
+alpha</code></pre>
+<pre><code>## &lt;environment: R_GlobalEnv&gt;</code></pre>
+<pre class="r"><code>search1 &lt;- parent.env(alpha)
+search1</code></pre>
+<pre><code>## &lt;environment: package:stats&gt;
+## attr(,&quot;name&quot;)
+## [1] &quot;package:stats&quot;
+## attr(,&quot;path&quot;)
+## [1] &quot;C:/Program Files/R/R-3.2.1/library/stats&quot;</code></pre>
+<pre class="r"><code>search2 &lt;- parent.env (search1)
+search2</code></pre>
+<pre><code>## &lt;environment: package:graphics&gt;
+## attr(,&quot;name&quot;)
+## [1] &quot;package:graphics&quot;
+## attr(,&quot;path&quot;)
+## [1] &quot;C:/Program Files/R/R-3.2.1/library/graphics&quot;</code></pre>
+<pre class="r"><code>search()</code></pre>
+<pre><code>## [1] &quot;.GlobalEnv&quot;        &quot;package:stats&quot;     &quot;package:graphics&quot; 
+## [4] &quot;package:grDevices&quot; &quot;package:utils&quot;     &quot;package:datasets&quot; 
+## [7] &quot;package:methods&quot;   &quot;Autoloads&quot;         &quot;package:base&quot;</code></pre>
+<pre class="r"><code>baseenv()</code></pre>
+<pre><code>## &lt;environment: base&gt;</code></pre>
+<pre class="r"><code>parent.env(baseenv())</code></pre>
+<pre><code>## &lt;environment: R_EmptyEnv&gt;</code></pre>
+</div>
+</div>
+<div id="appendix-b-test-outputs" class="section level2">
+<h2>Appendix B: Test Outputs</h2>
+<div id="x-2-matrix" class="section level3">
+<h3>2 x 2 matrix</h3>
 <pre class="r"><code>source(&quot;cachematrix.R&quot;)
 M &lt;- makeCacheMatrix(matrix(10:13, 2, 2))
 M$get()</code></pre>
@@ -188,8 +347,8 @@ M$get()</code></pre>
 ## [1,] -6.5    6
 ## [2,]  5.5   -5</code></pre>
 </div>
-<div id="x-3-matrix" class="section level5">
-<h5>2. 3 x 3 matrix</h5>
+<div id="x-3-matrix" class="section level3">
+<h3>3 x 3 matrix</h3>
 <pre class="r"><code>source(&quot;cachematrix.R&quot;)
 M &lt;- makeCacheMatrix(matrix(c(20, 13, 9, 51, 18, 33, 9, 101, 47), 3, 3))
 M$get()</code></pre>
@@ -212,8 +371,8 @@ M$get()</code></pre>
 ## [2,] -0.009272224 -0.026727652  0.059211550
 ## [3,] -0.008307664  0.006254084  0.009427798</code></pre>
 </div>
-<div id="x-4-matrix" class="section level5">
-<h5>3. 4 x 4 matrix</h5>
+<div id="x-4-matrix" class="section level3">
+<h3>4 x 4 matrix</h3>
 <pre class="r"><code>source(&quot;cachematrix.R&quot;)
 M &lt;- makeCacheMatrix(matrix(c(15, 11, 34, 50, 19, 68, 44, 12, 30, 11, 56, 98, 88, 1, 26, 10), 4, 4))
 M$get()</code></pre>
@@ -238,7 +397,6 @@ M$get()</code></pre>
 ## [2,]  0.006943442  0.029508340 -0.028894926  0.011073682
 ## [3,]  0.041815295  0.088620384 -0.179581022  0.090074022
 ## [4,]  0.010211551 -0.005971773  0.006502711 -0.006171519</code></pre>
-</div>
 </div>
 <div id="a-technical-note" class="section level3">
 <h3>A Technical Note:</h3>

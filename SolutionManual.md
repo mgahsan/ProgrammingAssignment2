@@ -1,21 +1,22 @@
----
-output:
-  html_document:
-    keep_md: yes
-  pdf_document: default
----
 # Programming Assignment 2: Lexical Scoping
-## CACHING THE INVERSE OF A MATRIX
+## Caching The Inverse of a Matrix
 
-###Keywords
+*M. G. Ahsan | August 20, 2015*
 
+**************************************************************************
+
+**Key Words:**
 Control Structure, Dynamic Scoping, Global Environment, Inverse Matrix, Lexical scoping, Parent Environment, Parent Frame, R, Square Matrix, Singular Matrix, Scoping Rules, Static Scoping
+
+[TOC]
 
 ### Introduction:
 
-This programming exercise constructs an R function that is able to cache potentially time consuming computations. Matrix inversion is typically a costly computation given that inverse of a matrix need to be used multiple times in solving for a linear system or even when using it in a loop. Taking advantage of the scoping rules of the R language, this programming exercise creates a preserve state inside of an R object, which computes the inverse of a matrix and can cache it in the memory for future use.
+This programming exercise constructs an R function system that is able to cache potentially time consuming computations. Matrix inversion is usually a costly computation given that inverse of a matrix needs to be used multiple times when solving for a linear system or even when using it in a loop. Taking advantage of the scoping rules of the R language, this programming exercise creates a preserve state inside of an R object, which computes the inverse of a matrix and can cache it in the memory for future use.
 
-This short note begins with discussing the mathematical properties of an invertible matrix and how an inverse matrix is computed in R. It then discusses the core mechanism of the R function-pair that are constructed and their implication regarding the scoping rules. The write-up ends with presenting some outputs to evaluate the mechanism.
+This short note begins with introducing the mathematical properties of invertible matrices as well as how an inverse matrix is computed in R. It then presents the core mechanism of the R function-pair that are constructed. The body of the note ends by discussing the implication of scoping rules in this sort of a project.
+
+The document also includes two detailed appendices that demonstrate step by step evaluation of the functions (**Appendix A**) and reports some test results (**Appendix B**)using different variations of square matrices.
 
 
 ### Inverse Matrix
@@ -23,8 +24,6 @@ This short note begins with discussing the mathematical properties of an inverti
 If $A$ is a square ($n \times n$) and non-singular ($\det(A) \ne 0$) matrix then an inverse matrix of $A$ is denoted by $A^{-1}$ such that $AA^{-1}=A^{-1}A=I$; where $I$ is the identity matrix.
 
 As only non-zero real numbers can have an inverse, in matrix algebra only non-singular square matrices have an inverse. Therefore, for $A$ to be invertible a matrix $A^{-1}$ must exist.
-
-#####Example:
 
 Consider the following 2 by 2 matrix:
 
@@ -72,7 +71,7 @@ When $b$ is missing in the function the generic equation becomes $a \times x=I$ 
 
 The `makeCacheMatrix` function creates a special "matrix' object that can cache its own inverse matrix. The function takes a matrix input 'x' as an  argument and then creates an environment that can both 'produce and cache the inverse of that matrix' and 'retrieve it from memory' if it is already cached.
 
-The 'Global Environment' created by the function provides the following functionality:
+The list of functions created in the Global Environment' provides the following functionality:
 
 1. Set the value of the matrix - `set`
 2. Get the value of the matrix - `get`
@@ -109,28 +108,319 @@ cacheSolve <- function(x, ...) {
         IM
 }
 ```
+**Appendix A** discusses how these system of functions work step by step through different environments abiding R's scoping rules. Test outputs using matrices of different dimensions have been presented in **Appendix B**.
+
 
 ###Implication of Scoping Rules
 
-Scoping rules followed by R-language is crucial to the design of the mechanism discussed so far. Scoping rules determine how a value is bound to a free variable (not an argument) in a function. The scoping rules followed by R is known as 'lexical scoping' which is also known as 'static scoping'.
+Scoping rules followed by R are crucial to the design of the mechanism discussed so far. Scoping rules determine how a value is bound to a free variable (not a formal argument) in a function. The scoping rules followed by R are known as 'lexical scoping' which is also known as 'static scoping'.
 
-Under lexical scoping, values for free variables are primarily searched in the environment in which the function was defined. Such an environment is known as the 'global environment' which typically refers to an environment developed on the user's work space.
+Under lexical scoping, values for free variables are primarily searched in the environment in which the function was defined. Such an environment is is typically the 'global environment' or the user's workspace.
 
-An exact opposite to lexical scoping is dynamic scoping. Under dynamic scoping, values for free variables are primarily searched in the environment from which the function was called. In R such an environment is known as the 'parent frame'. Example of a parent frame can be an R package.
+An exact opposite to lexical scoping is dynamic scoping. Under dynamic scoping, values for free variables are primarily searched in the environment from which the function was called. In R such an environment is known as the 'parent frame'. Example of a parent frame can be an R-package.
 
 ![Scoping Rules](C:\users\mgahsan\desktop\Lexical Scoping 2.png)
 
-Coming back to lexical scoping, if a value cannot be found in the environment in which the function was defined then R will look for it in the parent environment and then the parent of the parent environment and so on until it reaches the top-level environment. If a function is defined outside the global environment then the top level environment is the global environment (work space) itself. However if the function is defined in a package then the top-level environment is the namespace of that package. After the top level environment is reached, R will look for the value in the search list until it hits the 'empty environment' which is usually after the base package. R will come up with an error message if the value cannot be found after reaching the empty environment.
+Coming back to lexical scoping, if a value cannot be found in the environment in which the function was defined then R will look for it in its parent environment and then the parent of the parent environment and so on until a match is found. If a function is defined inside the global environment (workspace) then the top level environment is the global environment itself. However if the function is defined in a package then the top-level environment is the namespace of that package. After the top level environment has been searched, R will look for the value in the search list until it hits the 'empty environment' which is the parent to the base package. R will come up with an error message if the value cannot be found after reaching the empty environment. The empty environment does not have a parent environment.
 
-An interesting feature of R is that a function can be defined within a function. In other words, a function can return another function as an output. For the function which is defined within another function, the environment is not the global environment. The inside of the host function the environment in which the function was defined. Therefore, R will first search for a value in the host function. This feature of R functions combined with the manipulation of scoping rules actually makes this kind of programming exercise possible.
+An interesting feature of R is that a function can be defined within a function. In other words, a function can return another function as an output. For the function which is defined within another function, the primary environment is the inside of the host function. R usually defines a temporary environment inside the host whenever such a system of function is sourced. R will first search for a value in the host function, then in the global environment, and then across the search list until a match is found. This feature of R functions combined with the manipulation of scoping rules makes it possible to undertake the project in hand and many other complex programming projects.
 
-The figure above provides an sketch as to how the scoping rules would treat the assignment in hand. Both `makeCacheMatrix` and `cacheSolve` functions are global objects as for both of them the 'defining environment' is the global environment. For the `set` function  defined inside the `makeCacheMatrix` function the defining environment is the host itself. To bind a value to the `set` function, R will first look inside the the host function `makeCacheMatri` and then the global environment. Similarly, for a free variable inside `set`, R will first look for a value inside the function itself, then in its parent function and finally in the top-level or global environment.
+The figure above provides an sketch as to how the scoping rules would treat the assignment in hand. Both `makeCacheMatrix` and `cacheSolve` functions are global objects as for both of them the 'defining environment' is the global environment. For the `set`, `get`, `setinv` and `getinv` functions the defining environment is the inside of the `makeCacheMatrix` function. To bind a value to the `set` function, R will first look inside the the host function `makeCacheMatri` and then the global environment. Similarly, for a free variable inside `set`, R will first look for a value inside the function itself, then in its parent function and finally in the global environment.
+
+A more technical demonstration of R environments has been presented in **Appendix A**, using the `environment` function in R and some of its applications. The `parent.env` function has been used to demonstrate the scoping hierarchy.
 
 
+## Appendix A: R-Environment and Scoping Hierarchy
 
-### Test Outputs
+### The Construct of 'makeCacheMatrix'
 
-#####1. 2 x 2 matrix
+```r
+source("cachematrix.R")
+makeCacheMatrix()
+```
+
+```
+## $set
+## function (y) 
+## {
+##     x <<- y
+##     IM <<- NULL
+## }
+## <environment: 0x000000000a51d448>
+## 
+## $get
+## function () 
+## x
+## <environment: 0x000000000a51d448>
+## 
+## $setinv
+## function (inv) 
+## IM <<- inv
+## <environment: 0x000000000a51d448>
+## 
+## $getinv
+## function () 
+## IM
+## <environment: 0x000000000a51d448>
+```
+### Global Environment
+
+```r
+environment(makeCacheMatrix)
+```
+
+```
+## <environment: R_GlobalEnv>
+```
+```r
+environment(cacheSolve)
+```
+```
+## <environment: R_GlobalEnv>
+```
+```r
+ls(environment(makeCacheMatrix))
+```
+```
+## [1] "cacheSolve"      "makeCacheMatrix"
+```
+```r
+ls.str(environment(makeCacheMatrix))
+```
+```
+## cacheSolve : function (x, ...)
+## makeCacheMatrix : function (x = matrix())
+```
+
+### How the System of Functions Work
+
+#### Making the Special "Matrix"
+
+```r
+M <- makeCacheMatrix(matrix(c(13, 5, 18, 10), 2, 2))
+ls(environment(makeCacheMatrix))
+```
+```
+## [1] "cacheSolve"      "M"               "makeCacheMatrix"
+```
+```r
+ls.str(environment(makeCacheMatrix))
+```
+```
+## cacheSolve : function (x, ...)  
+## M : List of 4
+##  $ set   :function (y)  
+##  $ get   :function ()  
+##  $ setinv:function (inv)  
+##  $ getinv:function ()  
+## makeCacheMatrix : function (x = matrix())
+```
+#### Environment of the Subfunctions Before Implementing 'cacheSolve'
+
+```r
+environment(M$set)
+```
+
+```
+## <environment: 0x0000000007658c40>
+```
+
+```r
+environment(M$get)
+```
+
+```
+## <environment: 0x0000000007658c40>
+```
+
+```r
+environment(M$setinv)
+```
+
+```
+## <environment: 0x0000000007658c40>
+```
+
+```r
+environment(M$getinv)
+```
+
+```
+## <environment: 0x0000000007658c40>
+```
+
+```r
+ls(environment(M$set))
+```
+
+```
+## [1] "get"    "getinv" "IM"     "set"    "setinv" "x"
+```
+
+```r
+ls.str(environment(M$set))
+```
+
+```
+## get : function ()  
+## getinv : function ()  
+## IM :  NULL
+## set : function (y)  
+## setinv : function (inv)  
+## x :  num [1:2, 1:2] 13 5 18 10
+```
+#### Extracting the Inputed Matrix and Its Inverse Before 'cacheSolve'
+
+```r
+M$get()
+```
+
+```
+##      [,1] [,2]
+## [1,]   13   18
+## [2,]    5   10
+```
+
+```r
+M$getinv()
+```
+
+```
+## NULL
+```
+
+#### Implementing 'cacheSolve'
+
+```r
+cacheSolve(M)
+```
+
+```
+##        [,1]   [,2]
+## [1,]  0.250 -0.450
+## [2,] -0.125  0.325
+```
+
+#### Environment of the Subfunctions After Implementing 'cacheSolve'
+
+```r
+ls(environment(M$set))
+```
+```
+## [1] "get"    "getinv" "IM"     "set"    "setinv" "x"
+```
+```r
+ls.str(environment(M$set))
+```
+```
+## get : function ()  
+## getinv : function ()  
+## IM :  num [1:2, 1:2] 0.25 -0.125 -0.45 0.325
+## set : function (y)  
+## setinv : function (inv)  
+## x :  num [1:2, 1:2] 13 5 18 10
+```
+#### Extracting the Inputed Matrix and its Inverse After 'cacheSolve'
+```r
+M$get()
+```
+
+```
+##      [,1] [,2]
+## [1,]   13   18
+## [2,]    5   10
+```
+
+```r
+M$getinv()
+```
+
+```
+##        [,1]   [,2]
+## [1,]  0.250 -0.450
+## [2,] -0.125  0.325
+```
+
+#### Getting the Inverse From the Cache
+
+```r
+cacheSolve(M)
+```
+
+```
+## getting cached data (inverse matrix)
+```
+
+```
+##        [,1]   [,2]
+## [1,]  0.250 -0.450
+## [2,] -0.125  0.325
+```
+
+### Scoping Hierarchy
+
+Scoping will continue till it reaches the 'base environment' unless a match is found on the way. The parent for the base is typically the empty environment. When scoping reaches the empty environment, the process stops. An empty environment does not have a parent. Base, Global and Empty are system environments.
+
+```r
+beta <- environment(M$set)
+beta
+```
+```
+## <environment: 0x0000000007658c40>
+```
+```r
+alpha <- parent.env(beta)
+alpha
+```
+```
+## <environment: R_GlobalEnv>
+```
+```r
+search1 <- parent.env(alpha)
+search1
+```
+```
+## <environment: package:stats>
+## attr(,"name")
+## [1] "package:stats"
+## attr(,"path")
+## [1] "C:/Program Files/R/R-3.2.1/library/stats"
+```
+```r
+search2 <- parent.env (search1)
+search2
+```
+```
+## <environment: package:graphics>
+## attr(,"name")
+## [1] "package:graphics"
+## attr(,"path")
+## [1] "C:/Program Files/R/R-3.2.1/library/graphics"
+```
+```r
+search()
+```
+```
+## [1] ".GlobalEnv"        "package:stats"     "package:graphics" 
+## [4] "package:grDevices" "package:utils"     "package:datasets" 
+## [7] "package:methods"   "Autoloads"         "package:base"
+```
+```r
+baseenv()
+```
+```
+## <environment: base>
+```
+```r
+parent.env(baseenv())
+```
+```
+## <environment: R_EmptyEnv>
+```
+
+## Appendix B: Test Outputs
+
+### 2 x 2 matrix
 
 ```r
 source("cachematrix.R")
@@ -167,7 +457,7 @@ cacheSolve(M) # the data on inverse matrix is cached already
 ## [2,]  5.5   -5
 ```
 
-#####2. 3 x 3 matrix
+### 3 x 3 matrix
 
 ```r
 source("cachematrix.R")
@@ -207,7 +497,7 @@ cacheSolve(M) # the data on inverse matrix is cached already
 ## [3,] -0.008307664  0.006254084  0.009427798
 ```
 
-#####3. 4 x 4 matrix
+### 4 x 4 matrix
 
 ```r
 source("cachematrix.R")
@@ -249,7 +539,6 @@ cacheSolve(M) # the data on inverse matrix is cached already
 ## [3,]  0.041815295  0.088620384 -0.179581022  0.090074022
 ## [4,]  0.010211551 -0.005971773  0.006502711 -0.006171519
 ```
-
 ### A Technical Note:
 
 The inverse of a singular matrix, a matrix that incurs a determinant of zero (0), cannot be calculated. Inverse of a singular matrix is not defined. R will produce the error, "system is exactly singular." in such cases. It is advisable to use a non-singular matrix for evaluating this exercise.
