@@ -29,6 +29,11 @@
 ## 3. Set the value of the inverse matrix - `setinv`
 ## 4. Get the value of the inverse matrix - `getinv`
 
+## The operator `<<-' has been used in both `set` and `setinv` functions 
+## to store values to the objects defined under the child environment. 
+## Such objects under the child environment are the input matrix `x` and 
+## the inverse matrix `IM`. 
+
 makeCacheMatrix <- function(x = matrix()) {
        
         IM <- NULL
@@ -43,7 +48,7 @@ makeCacheMatrix <- function(x = matrix()) {
         setinv <- function(inv) IM <<- inv
         getinv <- function() IM
         
-        ## Storing the functions into a list
+        ## Packing the functions into a list
 
         list(set = set, get = get, setinv = setinv, getinv = getinv)
 }
