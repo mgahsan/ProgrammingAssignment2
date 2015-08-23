@@ -19,20 +19,20 @@ The document also includes two detailed appendices that demonstrate step by step
 
 ### Inverse Matrix
 
-If **A** is a square (**n * n**) and non-singular (**det(A) != 0**) matrix then an inverse of matrix **A** is denoted by **A^-1^** such that **AA^-1^ = A^-1^A = I**; where **I** is the identity matrix.
+If **A** is a square (**n * n**) and non-singular (**det(A) != 0**) matrix then an inverse of matrix **A** is denoted by **A^-1** such that **A A^-1 = A^-1 A = I**; where **I** is the identity matrix.
 
-As only non-zero real numbers can have an inverse, in matrix algebra only non-singular square matrices have an inverse. Therefore, for **A** to be invertible a matrix **A^-1^** must exist.
+As only non-zero real numbers can have an inverse, in matrix algebra only non-singular square matrices have an inverse. Therefore, for **A** to be invertible a matrix **A^-1** must exist.
 
 Consider the following 2 by 2 matrix:
 
 ```
 		X = |a	b| 	; 	1/X = 1/(ad -bc) . |d	-b|
-			|c	d|                      		|-c	a|
+            |c	d|						   |-c	 a|
 ```
 
-For the above square matrix **X**, an inverse **X^-1^** exists, only if **(ad - bc) != 0**. Also note that **(ad - bc)** is the determinant of **X**.
+For the above square matrix **X**, an inverse **X^-1** exists, only if **(ad - bc) != 0**. Also note that **(ad - bc)** is the determinant of **X**.
 
-One simple but necessary point to consider for this particular assignment is that getting the inverse of an invertible numeric matrix is as simple as dividing the identity matrix with the matrix itself, i.e., **X^-1^X = I** or, **X^-1^ = I / X**.
+One simple but necessary point to consider for this particular assignment is that getting the inverse of an invertible numeric matrix is as simple as dividing the identity matrix with the matrix itself, i.e., **X^-1 X = I** or, **X^-1 = I / X**.
 
 
 ### Inverse Matrix in R
@@ -51,7 +51,7 @@ b : A numeric or complex vector or matrix giving the right-hand side of the line
 
 This function basically solves the linear equation **a * x = b** for **x**; where **b** can be a matrix or a vector. The argument **b** is also defined such that if it is not included as an argument in the function, it is assumed to be an identity matrix by R. This characteristic of **b** allows the calculation on an inverse of **a** by using the `solve(a)` function.
 
-When **b** is missing in the function the generic equation becomes **a * x = I** or, **x = I / a = a^-1^**. Therefore, given that **a** is an invertible square matrix, **x** is simply the inverse of that matrix.
+When **b** is missing in the function the generic equation becomes **a * x = I** or, **x = I / a = a^-1**. Therefore, given that **a** is an invertible square matrix, **x** is simply the inverse of that matrix.
 
 ### The Cache Matrix
 
@@ -105,11 +105,11 @@ Under lexical scoping, values for free variables are primarily searched in the e
 
 An exact opposite to lexical scoping is dynamic scoping. Under dynamic scoping, values for free variables are primarily searched in the environment from which the function was called. In R such an environment is known as the 'parent frame'. Example of a parent frame can be an R-package.
 
-![](C:\users\mgahsan\DataScience\rprog\ProgrammingAssignment2\Lexical Scoping 2.jpg?raw=true)
-
 Coming back to lexical scoping, if a value cannot be found in the environment in which the function was defined then R will look for it in its parent environment and then the parent of the parent environment and so on until a match is found. If a function is defined inside the global environment (workspace) then the top level environment is the global environment itself. However if the function is defined in a package then the top-level environment is the namespace of that package. After the top level environment has been searched, R will look for the value in the search list until it hits the 'empty environment' which is the parent to the base package. R will come up with an error message if the value cannot be found after reaching the empty environment. The empty environment does not have a parent environment.
 
 An interesting feature of R is that a function can be defined within a function. In other words, a function can return another function as an output. For the function which is defined within another function, the primary environment is the inside of the host function. R usually defines a temporary environment inside the host whenever such a system of function is sourced. R will first search for a value in the host function, then in the global environment, and then across the search list until a match is found. This feature of R functions combined with the manipulation of scoping rules makes it possible to undertake the project in hand and many other complex programming projects.
+
+[Figure: Lexical Scoping Rules in R](https://drive.google.com/file/d/0B-EEAEKYWn44aE8zMzRkcW1UcWc/view?usp=sharing)
 
 The figure above provides an sketch as to how the scoping rules would treat the assignment in hand. Both `makeCacheMatrix` and `cacheSolve` functions are global objects as for both of them the 'defining environment' is the global environment. For the `set`, `get`, `setinv` and `getinv` functions the defining environment is the inside of the `makeCacheMatrix` function. To bind a value to the `set` function, R will first look inside the the host function `makeCacheMatri` and then the global environment. Similarly, for a free variable inside `set`, R will first look for a value inside the function itself, then in its parent function and finally in the global environment.
 
