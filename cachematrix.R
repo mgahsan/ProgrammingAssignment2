@@ -1,8 +1,9 @@
-## CACHING THE INVERSE OF A MATRIX
+## PROGRAMMING ASSIGNMENT 2: LEXICAL SCOPING ##
+## CACHING THE INVERSE OF A MATRIX ##
 
 ## Introduction:
 
-## This kind of programming exercise is useful to address time
+## This programming exercise is useful to address time
 ## consuming computations in R. Computing inverse of a matrix
 ## can be costly when it needs to be done mutliple times when
 ## solving for a linear system or even when using it in a loop.
