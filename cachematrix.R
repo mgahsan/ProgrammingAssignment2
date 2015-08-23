@@ -13,7 +13,7 @@
 ## The Cache Matrix:
 
 ## The following function creates a special 'matrix' object which 
-## takes a invertible matrix 'x' as an argument and then creates an 
+## takes an invertible matrix 'x' as an argument and then creates an 
 ## environment that enables both caching and retrieving the inverse 
 ## of the input matrix.  
 
@@ -76,7 +76,6 @@ cacheSolve <- function(x, ...) {
         IM
 }
 
-
 ## Scoping Rules:
 
 ## R will create a temporary environment inside of 'makeCacheMatrix'
@@ -102,12 +101,11 @@ cacheSolve <- function(x, ...) {
 ## environment() - returns the name of the environment 
 ## parent.env() - returns the parent environment of an environment
 
-
 ## Example: if a special matrix 'M' is created by the makeCacheMatrix` 
 ## function then:
 
-## ls(environment(makeCacheMatrix): "makeCacheMatrix","cacheSolve","M"
-## ls(environment(M$get): "set", "get", "setinv", "getinv", "IM", "x"
+## ls(environment(makeCacheMatrix)): "makeCacheMatrix","cacheSolve","M"
+## ls(environment(M$get)): "set", "get", "setinv", "getinv", "IM", "x"
 ## environment(makeCacheMatrix): <environment: R_GlobalEnv>
 ## environment(M$get): <environment: 0x0000000007658c40> 
 ## parent.env(environment(M$get)): <environment: R_GlobalEnv>
